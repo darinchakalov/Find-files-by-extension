@@ -14,7 +14,7 @@ class bcolors:
 
 
 # DONE file extension menu repeat if no files found - if files found main_menu_options else no files found options 
-# TODO submenus for search in files and move files
+# DONE submenus for search in files
 # TODO Move files -> list available dirs and choose one or create new one to move files to
 # TODO auto organizer -> create dirs named with files extension and move each file with that extension into it
 # TODO try to add menu to list all available extensions
@@ -59,10 +59,16 @@ main_menu_options = {
     2: 'Search in files',
     3: 'Move files',
     4: 'Search for another extension',
-    5: 'Exit',
+    5: 'List all extensions in the folder -- TODO',
+    6: 'Exit',
 }
 
 delete_files_options = {
+    1: 'Yes',
+    2: 'No - go back'
+}
+
+search_files_options = {
     1: 'Yes',
     2: 'No - go back'
 }
@@ -82,9 +88,24 @@ def delete_files():
             print(f"The file {file} doesn't exist or could not be deleted")
             pass
 
-def search_in_files():
-    search_string = input(f"{bcolors.OKCYAN}Please specify string you want to look for into the selected files: {bcolors.ENDC}")
-    
+def search_in_files(search_string):
+    for fname in file_list:
+        f = open(fname, 'r', encoding='utf8')
+
+        if search_string in f.read():
+            print(f"Found search string in {bcolors.OKGREEN}{fname}{bcolors.ENDC}")
+            print(f"{bcolors.BOLD}Results in the file: {bcolors.ENDC}")
+            
+            with open(fname, encoding='utf8') as f:
+                lines = [line.rstrip() for line in f]
+            
+            count = 0
+            for line in lines:
+                if search_string in line:
+                    count +=1
+                    print(f"Line {count}: {line}")
+            print()
+
 
 def move_files():
     print(f'{bcolors.WARNING}Files moved. {bcolors.ENDC}')
@@ -115,11 +136,27 @@ def main():
                 else:
                     break
         elif option == 2:
-            search_in_files()
+            search_string = input(f"{bcolors.OKCYAN}Please specify string you want to look for into the selected files: {bcolors.ENDC}")
+            while True:
+                
+                search_in_files(search_string)
+
+                print_menu(search_files_options)
+                try:
+                    option = int(input(f'{bcolors.OKBLUE}Search another string? {bcolors.ENDC}'))
+                except:
+                    print('Wrong input. Please enter a number ...')
+
+                if option == 1:
+                    search_string = input(f"{bcolors.OKCYAN}Please specify string you want to look for into the selected files: {bcolors.ENDC}")
+                    search_in_files(search_string)
+                else:
+                    break
+                
+
         elif option == 3:
             move_files()
         elif option == 4:
-            #TODO fix this section
             global file_list
             file_list = []
             extension_select_menu()
