@@ -39,6 +39,7 @@ main_menu_options = {
 
 confirm_options = {1: "Yes", 2: "No - go back"}
 
+auto_organizer_options = {1: "Run AutoOrganizer*", 2: "No - go back"}
 
 global file_list
 file_list = []
@@ -51,14 +52,19 @@ def print_files():
 
 
 def fill_file_list(ext):
-    for file in os.listdir(CWD):
-        if isfile(file) and file.endswith(ext):
-            file_list.append(file)
+    if ext == "*":
+        for file in os.listdir(CWD):
+            if isfile(file):
+                file_list.append(file)
+    else:
+        for file in os.listdir(CWD):
+            if isfile(file) and file.endswith(ext):
+                file_list.append(file)
 
 
 def extension_select_menu():
     ext = input(
-        f"{bcolors.HEADER}Please specify file extension: {bcolors.ENDC}"
+        f"{bcolors.HEADER}Please specify file extension (Fill * to choose all files): {bcolors.ENDC}"
     ).lower()
 
     fill_file_list(ext)
@@ -67,7 +73,7 @@ def extension_select_menu():
         if len(file_list) == 0:
             print("No files with that extension found. Try another")
             ext = input(
-                f"{bcolors.HEADER}Please specify another file extension: {bcolors.ENDC}"
+                f"{bcolors.HEADER}Please specify another file extension (Fill * to choose all files): {bcolors.ENDC}"
             ).lower()
 
             fill_file_list(ext)
@@ -194,6 +200,17 @@ def list_all_extensions():
         print(f"{ext}: found {count}")
 
 
+def auto_organizer():
+    print('This is AutoOrganizer*')
+    print("It will find all files in the root of this folder, check for their extensions, create folders named after each extension (if it doesn't exist) and move files into the corresponding directory")
+    print_menu(auto_organizer_options)
+    option = int(
+        input(f"{bcolors.OKBLUE}Please select option: {bcolors.ENDC}"))
+    if option == 1:
+        # TODO Create AutoOrganizer functionality
+        print("Shit go real")
+
+
 def main():
     extension_select_menu()
     while True:
@@ -219,7 +236,7 @@ def main():
         elif option == 5:
             list_all_extensions()
         elif option == 6:
-            print('Auto organizer')
+            auto_organizer()
         elif option == 9:
             print("Exiting script...")
             exit()
