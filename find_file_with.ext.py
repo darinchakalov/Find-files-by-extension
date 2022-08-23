@@ -1,5 +1,5 @@
-from genericpath import isfile
 import os
+from genericpath import isfile
 from pathlib import Path
 
 
