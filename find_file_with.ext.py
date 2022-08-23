@@ -13,20 +13,18 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-# TODO file extension menu repeat if no files found - if files found main_menu_options else no files found options -- DONE (uj)
+# DONE file extension menu repeat if no files found - if files found main_menu_options else no files found options 
 # TODO submenus for search in files and move files
 # TODO Move files -> list available dirs and choose one or create new one to move files to
 # TODO auto organizer -> create dirs named with files extension and move each file with that extension into it
-
-
-ext = input(f"{bcolors.HEADER}Please specify file extention: {bcolors.ENDC}").lower()
-
+# TODO try to add menu to list all available extensions
 
 DOWNLOADS_FOLDER = str(Path.home() / 'Downloads')
 os.chdir(DOWNLOADS_FOLDER)
 CWD = os.getcwd()
 
 
+global file_list
 file_list = []
 
 def print_files():
@@ -34,15 +32,22 @@ def print_files():
     for file in file_list:
             print(file)
 
+def fill_file_list(ext):
+    for file in os.listdir(CWD):
+                if file.endswith(ext):
+                    file_list.append(file)
+
 def extension_select_menu():
+    ext = input(f"{bcolors.HEADER}Please specify file extension: {bcolors.ENDC}").lower()
+
+    fill_file_list(ext)
+
     while True:
         if len(file_list) == 0:
             print("No files with that extension found. Try another")
-            ext = input(f"{bcolors.HEADER}Please specify another file extention: {bcolors.ENDC}").lower()
+            ext = input(f"{bcolors.HEADER}Please specify another file extension: {bcolors.ENDC}").lower()
 
-            for file in os.listdir(CWD):
-                if file.endswith(ext):
-                    file_list.append(file)
+            fill_file_list(ext)
         else: 
             print_files()
             break
@@ -78,7 +83,8 @@ def delete_files():
             pass
 
 def search_in_files():
-    print(f'{bcolors.WARNING}Files searched. {bcolors.ENDC}')
+    search_string = input(f"{bcolors.OKCYAN}Please specify string you want to look for into the selected files: {bcolors.ENDC}")
+    
 
 def move_files():
     print(f'{bcolors.WARNING}Files moved. {bcolors.ENDC}')
@@ -114,7 +120,9 @@ def main():
             move_files()
         elif option == 4:
             #TODO fix this section
-           extension_select_menu()
+            global file_list
+            file_list = []
+            extension_select_menu()
         elif option == 5:
             print('Exiting script...')
             exit()
