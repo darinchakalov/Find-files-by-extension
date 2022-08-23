@@ -22,9 +22,9 @@ CWD = os.getcwd()
 
 # DONE file extension menu repeat if no files found - if files found main_menu_options else no files found options
 # DONE submenus for search in files
-# TODO Move files -> list available dirs and choose one or create new one to move files to
+# DONE Move files -> list available dirs and choose one or create new one to move files to
 # TODO auto organizer -> create dirs named with files extension and move each file with that extension into it
-# DOne Add menu to list all available extensions
+# DONE Add menu to list all available extensions
 # TODO Add comments
 
 main_menu_options = {
@@ -32,8 +32,9 @@ main_menu_options = {
     2: "Search in files",
     3: "Move files",
     4: "Search for another extension",
-    5: "List all extensions in the folder -- TODO",
-    6: "Exit",
+    5: "List all extensions in the folder",
+    6: 'AutoOrganizer*',
+    9: "Exit",
 }
 
 confirm_options = {1: "Yes", 2: "No - go back"}
@@ -218,6 +219,8 @@ def main():
         elif option == 5:
             list_all_extensions()
         elif option == 6:
+            print('Auto organizer')
+        elif option == 9:
             print("Exiting script...")
             exit()
         else:
