@@ -20,6 +20,8 @@ DOWNLOADS_FOLDER = str(Path.home() / "Downloads")
 os.chdir(DOWNLOADS_FOLDER)
 CWD = os.getcwd()
 
+print(CWD)
+
 # DONE file extension menu repeat if no files found - if files found main_menu_options else no files found options
 # DONE submenus for search in files
 # DONE Move files -> list available dirs and choose one or create new one to move files to
@@ -200,6 +202,8 @@ def list_all_extensions():
         print(f"{ext}: found {count}")
 
 
+
+
 def auto_organizer():
     print('This is AutoOrganizer*')
     print("It will find all files in the root of this folder, check for their extensions, create folders named after each extension (if it doesn't exist) and move files into the corresponding directory")
@@ -207,8 +211,38 @@ def auto_organizer():
     option = int(
         input(f"{bcolors.OKBLUE}Please select option: {bcolors.ENDC}"))
     if option == 1:
-        # TODO Create AutoOrganizer functionality
-        print("Shit go real")
+        extensions = []
+        for file in os.listdir(CWD):
+            if isfile(file):
+                file_name_splitter = file.split(".")
+                if len(file_name_splitter) > 1:
+                    extension = file_name_splitter[-1]
+                    extensions.append(extension)
+        
+        list_dir = [d for d in os.listdir(CWD) if isdir(d)]
+        
+        for ext in extensions:
+            current_files = [f for f in os.listdir(CWD) if isfile(f) and f.endswith(ext)]
+            if ext.upper() not in list_dir:
+                os.mkdir(ext.upper())
+                list_dir.append(ext.upper())
+                print(f"{bcolors.OKGREEN}Created subdirectory named {ext.upper()}{bcolors.ENDC}")
+
+            for file in current_files:
+                source = CWD + "\\" + file
+                destination = CWD + "\\" + ext.upper() + "\\" + file
+                shutil.move(source, destination)
+                print(
+                    f"{bcolors.OKGREEN}{file} moved in {destination}{bcolors.ENDC}")
+
+        f"{bcolors.OKGREEN}All files moved{bcolors.ENDC}"
+
+        for dir in list_dir:
+            files_count = len(os.listdir(dir))
+            new_dir_name = f"AutoOptimizer-{dir}--has-{files_count}-in-it"
+            os.rename(dir, new_dir_name)
+                
+
 
 
 def main():
