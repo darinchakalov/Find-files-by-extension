@@ -1,6 +1,7 @@
 import os
-from genericpath import isfile
+from genericpath import isdir, isfile
 from pathlib import Path
+import shutil
 
 
 class bcolors:
@@ -35,9 +36,7 @@ main_menu_options = {
     6: "Exit",
 }
 
-delete_files_options = {1: "Yes", 2: "No - go back"}
-
-search_files_options = {1: "Yes", 2: "No - go back"}
+confirm_options = {1: "Yes", 2: "No - go back"}
 
 
 global file_list
@@ -52,7 +51,7 @@ def print_files():
 
 def fill_file_list(ext):
     for file in os.listdir(CWD):
-        if file.endswith(ext):
+        if isfile(file) and file.endswith(ext):
             file_list.append(file)
 
 
@@ -113,12 +112,36 @@ def search_in_files(search_string):
 
 
 def move_files():
-    print(f"{bcolors.WARNING}Files moved. {bcolors.ENDC}")
+    directories = [d for d in os.listdir(CWD) if isdir(d)]
+    print("List of directories:")
+    for dir in directories:
+        print(dir)
+    selected_folder = input(
+        f"{bcolors.OKCYAN}Please copy/paste folder you wish to move files to (if it does not exist it will be created): {bcolors.ENDC}")
+    if selected_folder not in directories:
+        print(
+            f"{bcolors.FAIL}The folder {selected_folder} was not found! Create this folder?")
+        print_menu(confirm_options)
+        action = int(
+            input(f"{bcolors.OKBLUE}Please select option: {bcolors.ENDC}"))
+
+        if action == 1:
+            os.mkdir(selected_folder)
+            print(
+                f"{bcolors.OKGREEN}Created directory {selected_folder}{bcolors.ENDC}")
+
+    print(f"Moving files to {selected_folder} subfolder")
+
+    for file in file_list:
+        source = CWD + "\\" + file
+        destination = CWD + "\\" + selected_folder + "\\" + file
+        shutil.move(source, destination)
+        print(f"{file} moved in {destination}")
 
 
 def delete_files_menu():
     while True:
-        print_menu(delete_files_options)
+        print_menu(confirm_options)
         try:
             option = int(
                 input(f"{bcolors.OKBLUE}Please select option: {bcolors.ENDC}"))
@@ -139,7 +162,7 @@ def search_in_files_menu():
     while True:
 
         search_in_files(search_string)
-        print_menu(search_files_options)
+        print_menu(confirm_options)
         try:
             option = int(
                 input(f"{bcolors.OKBLUE}Search another string? {bcolors.ENDC}")
@@ -153,6 +176,21 @@ def search_in_files_menu():
             search_in_files(search_string)
         else:
             break
+
+
+def list_all_extensions():
+    extensions = {}
+    for file in os.listdir(CWD):
+        if isfile(file):
+            file_name_splitter = file.split(".")
+            if len(file_name_splitter) > 1:
+                extension = file_name_splitter[-1]
+                if extension in extensions:
+                    extensions[extension] += 1
+                else:
+                    extensions[extension] = 1
+    for ext, count in extensions.items():
+        print(f"{ext}: found {count}")
 
 
 def main():
@@ -178,20 +216,7 @@ def main():
             file_list = []
             extension_select_menu()
         elif option == 5:
-            extensions = {}
-            for file in os.listdir(CWD):
-                if isfile(file):
-                    file_name_splitter = file.split(".")
-                    if len(file_name_splitter) > 1:
-                        extension = file_name_splitter[-1]
-                        if extension in extensions:
-                            extensions[extension] += 1
-                        else:
-                            extensions[extension] = 1
-
-            for ext, count in extensions.items():
-                print(f"{ext}: found {count}")
-
+            list_all_extensions()
         elif option == 6:
             print("Exiting script...")
             exit()
