@@ -21,13 +21,6 @@ DOWNLOADS_FOLDER = str(Path.home() / "Downloads")
 os.chdir(DOWNLOADS_FOLDER)
 CWD = os.getcwd()
 
-# DONE file extension menu repeat if no files found - if files found main_menu_options else no files found options
-# DONE submenus for search in files
-# DONE Move files -> list available dirs and choose one or create new one to move files to
-# DONE auto organizer -> create dirs named with files extension and move each file with that extension into it
-# DONE Add menu to list all available extensions
-# TODO Add comments
-
 # Menu selection options which are added as function inputs for the print_menu() function
 main_menu_options = {
     1: "Delete files",
